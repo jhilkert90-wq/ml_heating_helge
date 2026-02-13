@@ -29,27 +29,27 @@ class ThermalParameterConfig:
     # UPDATED FOR TDD COMPLIANCE
     # physically reasonable ranges with realistic heat balance
     DEFAULTS = {
-        'outlet_temp_max': 65.0,           # °C
+        'outlet_temp_max': 35.0,           # °C
         'outlet_temp_min': 14.0,           # °C
         'thermal_time_constant': 4.0,      # hours
         'equilibrium_ratio': 0.17,         # dimensionless
         'total_conductance': 0.8,         # 1/hour
-        'pv_heat_weight': 0.002,           # °C/W
-        'fireplace_heat_weight': 5.0,      # °C
+        'pv_heat_weight': 0.0007,           # °C/W
+        'fireplace_heat_weight': 0.2,      # °C
         'tv_heat_weight': 0.2,             # °C
         'adaptive_learning_rate': 0.01,
         'learning_confidence': 3.0,
         'min_learning_rate': 0.001,
         'max_learning_rate': 0.1,
-        'heat_loss_coefficient': 0.3,      # 1/hour
-        'outlet_effectiveness': 0.5,      # dimensionless
+        'heat_loss_coefficient': 0.183,      # 1/hour
+        'outlet_effectiveness': 0.702,      # dimensionless
     }
 
     # Parameter bounds (min, max) for optimization and validation
     # These bounds are designed to allow realistic parameter exploration
     # while preventing physically impossible values
     BOUNDS = {
-        'outlet_temp_max': (60.0, 70.0),   # °C
+        'outlet_temp_max': (30.0, 70.0),   # °C
         'outlet_temp_min': (14.0, 30.0),   # °C
         'thermal_time_constant': (3.0, 8.0),     # Hours
         'equilibrium_ratio': (0.1, 0.9),         # dimensionless
