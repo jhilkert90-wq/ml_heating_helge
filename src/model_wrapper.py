@@ -399,7 +399,7 @@ class EnhancedModelWrapper:
         # Iterative search to find outlet temp that produces target indoor
         # temp. This uses the learned thermal physics parameters from
         # calibration.
-        tolerance = 0.1  # °C
+        tolerance = 0.05  # °C
 
         # Use natural system bounds. Let binary search and physics model
         # handle optimal outlet temps.
@@ -519,35 +519,26 @@ class EnhancedModelWrapper:
 
             # Predict indoor temperature with this outlet temperature using cycle-aligned conditions
             try:
-                cycle_hours = config.CYCLE_INTERVAL_MINUTES / 60.0
-                trajectory_result = self.thermal_model.predict_thermal_trajectory(
-                    current_indoor=current_indoor,
-                    target_indoor=target_indoor,
+                predicted_indoor = self.thermal_model.predict_equilibrium_temperature(
                     outlet_temp=outlet_mid,
                     outdoor_temp=avg_outdoor,
-                    time_horizon_hours=cycle_hours,
-                    time_step_minutes=config.CYCLE_INTERVAL_MINUTES,
+                    current_indoor=current_indoor,
                     pv_power=avg_pv,
                     fireplace_on=fireplace_on,
                     tv_on=tv_on,
+                    _suppress_logging=True,
                 )
 
-                if (
-                    not trajectory_result
-                    or "trajectory" not in trajectory_result
-                    or not trajectory_result["trajectory"]
-                ):
+                if predicted_indoor is None:
                     logging.warning(
-                        f"   Iteration {iteration+1}: predict_thermal_trajectory returned invalid result "
+                        f"   Iteration {iteration+1}: predict_equilibrium_temperature returned None "
                         f"for outlet={outlet_mid:.1f}°C - using fallback"
                     )
                     return 35.0
 
-                predicted_indoor = trajectory_result["trajectory"][0]
-
             except Exception as e:
                 logging.error(
-                    f"   Iteration {iteration+1}: predict_thermal_trajectory failed: {e}"
+                    f"   Iteration {iteration+1}: predict_equilibrium_temperature failed: {e}"
                 )
                 return 35.0  # Safe fallback
 
@@ -971,7 +962,8 @@ class EnhancedModelWrapper:
                 )
 
             # TRAJECTORY-BASED DECISION: Check if target reachable within cycle time
-            cycle_hours = config.CYCLE_INTERVAL_MINUTES / 60.0
+            # cycle_hours = config.CYCLE_INTERVAL_MINUTES / 60.0
+            cycle_hours = 2.0  # Use fixed 2h horizon for trajectory evaluation to allow more time for correction if needed
             # Allow a small tolerance (e.g. 15 mins) for reaching target
             # This prevents correcting just because we are a few minutes late, supporting "fast push"
             tolerance_hours = 15.0 / 60.0
@@ -990,13 +982,24 @@ class EnhancedModelWrapper:
             logging.debug(
                 f"🔍 Trajectory DEBUG: outlet={outlet_temp:.1f}°C → {first_step_time:.1f}h_prediction={first_step_temp:.2f}°C "
                 f"(vs target {target_indoor:.1f}°C, error: {first_step_temp - target_indoor:+.3f}°C), "
-                f"reaches_target_at={reaches_target_at}h, cycle_time={cycle_hours:.1f}h"
+                f"reaches_target_at={reaches_target_at}h, cycle_time(fixed)={cycle_hours:.1f}h"
             )
+
+            # Show full trajectory (1h-4h) with deviation vs target for debugging
+            trajectory_temps = trajectory.get("trajectory", [])
+            trajectory_times = trajectory.get("times", [])
+            if trajectory_temps:
+                logging.debug(f"🔍 Trajectory predictions for target {target_indoor:.1f}°C:")
+                for i, temp in enumerate(trajectory_temps):
+                    # Use trajectory_times if available, else fallback to index
+                    t = trajectory_times[i] if trajectory_times and i < len(trajectory_times) else (i + 1)
+                    error = temp - target_indoor
+                    logging.debug(
+                        f"    {t:.1f}h: {temp:.2f}°C → target {target_indoor:.2f}°C (error: {error:+.2f}°C)"
+                    )
 
             # NEW LOGIC: Check for temperature boundary violations regardless of target achievement
             # This ensures comfort boundaries are respected even when target is theoretically reachable
-            trajectory_temps = trajectory.get("trajectory", [])
-            trajectory_times = trajectory.get("times", [])
 
             if trajectory_temps:
                 min_temp = min(trajectory_temps)
@@ -1162,7 +1165,7 @@ class EnhancedModelWrapper:
 
             # Physics-based scaling using house thermal characteristics.
             if self.thermal_model.outlet_effectiveness > 0.01:
-                base_scale = (1.0 / self.thermal_model.outlet_effectiveness) * 0.2
+                base_scale = (1.0 / self.thermal_model.outlet_effectiveness) * 1.5
             else:
                 base_scale = 15.0  # Fallback
 
@@ -1228,9 +1231,9 @@ class EnhancedModelWrapper:
             return (
                 0.0  # No pressure - target reachable in time (should not happen here)
             )
-        elif reaches_target_at <= cycle_hours * 2:
+        elif reaches_target_at <= cycle_hours * 1.5:
             return 0.3  # Low pressure - close to reachable
-        elif reaches_target_at <= cycle_hours * 4:
+        elif reaches_target_at <= cycle_hours * 2.0:
             return 0.6  # Medium pressure
         else:
             return 1.0  # High pressure - far from target
