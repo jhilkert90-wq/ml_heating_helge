@@ -133,3 +133,83 @@ options:
   enable_delta_forecast_calibration: true
   delta_calibration_max_offset: 10.0
 
+schema:
+  # Core Entity Configuration - All entity fields as string input
+  target_indoor_temp_entity: "str"
+  indoor_temp_entity: "str"
+  outdoor_temp_entity: "str"
+  heating_control_entity: "str"
+  outlet_temp_entity: "str"
+  target_outlet_temp_entity: "str"
+  actual_target_outlet_temp_entity: "str"
+  openweathermap_temp_entity: "str"
+  avg_other_rooms_temp_entity: "str"
+  pv_forecast_entity: "str"
+  # External Heat Sources - Entity fields as string input
+  pv_power_entity: "str"
+  fireplace_status_entity: "str"
+  tv_power_entity: "str"
+  # Blocking Detection - Entity fields as string input
+  dhw_status_entity: "str"
+  defrost_status_entity: "str"
+  disinfection_status_entity: "str"
+  dhw_boost_heater_entity: "str"
+  # ML Learning Parameters - Numeric types with proper ranges
+  cycle_interval_minutes: "int(5,60)"
+  max_temp_change_per_cycle: "float(0.5,10.0)"
+  history_steps: "int(3,12)"
+  history_step_minutes: "int(5,30)"
+  training_lookback_hours: "int(24,720)"
+  # Safety Configuration - Float types with safety ranges
+  safety_max_temp: "float(18.0,30.0)"
+  safety_min_temp: "float(15.0,25.0)"
+  clamp_min_abs: "float(10.0,25.0)"
+  clamp_max_abs: "float(30.0,80.0)"
+  # InfluxDB Configuration - String and port types
+  influxdb_host: "str"
+  influxdb_port: "port"
+  influxdb_database: "str"
+  influxdb_token: "str"
+  influxdb_org: "str"
+  influxdb_bucket: "str"
+  influx_features_bucket: "str"
+  # Model Management - Boolean and integer types
+  auto_backup_enabled: "bool"
+  backup_retention_days: "int(1,365)"
+  # Dashboard Configuration - Integer, boolean, and list types
+  dashboard_update_interval: "int(5,300)"
+  show_advanced_metrics: "bool"
+  dashboard_theme: "list(auto|light|dark)"
+  # Development Settings - Boolean, string, and list types
+  enable_dev_api: "bool"
+  dev_api_key: "str"
+  log_level: "list(DEBUG|INFO|WARNING|ERROR)"
+  # Performance Tuning - Float and boolean types
+  confidence_threshold: "float(0.1,0.95)"
+  physics_validation_enabled: "bool"
+  seasonal_learning_enabled: "bool"
+  # Heat Balance Controller - Boolean, float, and integer types
+  heat_balance_mode: "bool"
+  charging_mode_threshold: "float(0.1,2.0)"
+  maintenance_mode_threshold: "float(0.1,1.0)"
+  trajectory_steps: "int(2,8)"
+  oscillation_penalty_weight: "float(0.0,1.0)"
+  final_destination_weight: "float(1.0,3.0)"
+  # Advanced Learning Features - Boolean, integer, and float types
+  enable_multi_lag_learning: "bool"
+  pv_lag_steps: "int(1,8)"
+  fireplace_lag_steps: "int(1,8)"
+  tv_lag_steps: "int(1,6)"
+  seasonal_learning_rate: "float(0.001,0.1)"
+  min_seasonal_samples: "int(50,500)"
+  enable_summer_learning: "bool"
+  # System Behavior Configuration - Integer types
+  grace_period_max_minutes: "int(10,120)"
+  blocking_poll_interval_seconds: "int(30,300)"
+  prediction_horizon_steps: "int(12,96)"
+  # Shadow Mode Configuration - Boolean type
+  shadow_mode: "bool"
+  # ML Heating Control Entity - String type
+  ml_heating_control_entity: "str"
+
+
