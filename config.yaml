@@ -3,31 +3,23 @@ version: "0.2.0"
 slug: "ml_heating_helge"
 description: "Physics-based machine learning heating control system with online learning (Stable Channel)"
 url: "https://github.com/jhilkert90-wq/ml_heating_helge"
-
 arch:
   - aarch64
   - amd64
-
 startup: services
 init: false
-
 map:
   - addon_config:rw
-
 ingress: true
 ingress_port: 3001
 panel_icon: mdi:heat-pump
 panel_title: "ML Heating"
-
 homeassistant: 2024.1.0
-
 privileged:
   - SYS_RAWIO
-
 apparmor: false
 hassio_api: true
 homeassistant_api: true
-
 options:
   target_indoor_temp_entity: "input_number.soll_rt"
   indoor_temp_entity: "sensor.rt_mittelwert_mean"
@@ -60,10 +52,10 @@ options:
   clamp_min_abs: 14.0
   clamp_max_abs: 35.0
 
-  influxdb_host: "a0d7b954-influxdb"
+  influxdb_host: "http://192.168.0.223:8089"
   influxdb_port: 8089
   influxdb_database: "home_assistant"
-  influxdb_token: "VmGuemi0CQS8keH1SIdiaBFgkQcWiaYvdtRhLcKhdLPtkRhWnfbBcJCbWdVIKjRAiSQZU89Juvds6OsES-SLfg=="
+  influxdb_token: ""
   influxdb_org: "home"
   influxdb_bucket: "home_assistant"
   influx_features_bucket: "ml_heating_features"
@@ -104,13 +96,13 @@ options:
   ml_heating_control_entity: "input_boolean.ml_heating"
 
   thermal_time_constant: 4
-  heat_loss_coefficient: 0.2
-  outlet_effectiveness: 0.73
+  heat_loss_coefficient: 0.183
+  outlet_effectiveness: 0.702
   outdoor_coupling: 0.3
   thermal_bridge_factor: 0.1
 
-  pv_heat_weight: 0.0005
-  fireplace_heat_weight: 0.1
+  pv_heat_weight: 0.0007
+  fireplace_heat_weight: 0.2
   tv_heat_weight: 0.2
 
   adaptive_learning_rate: 0.01
@@ -140,3 +132,4 @@ options:
 
   enable_delta_forecast_calibration: true
   delta_calibration_max_offset: 10.0
+
