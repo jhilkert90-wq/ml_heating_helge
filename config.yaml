@@ -189,12 +189,7 @@ schema:
   physics_validation_enabled: "bool"
   seasonal_learning_enabled: "bool"
   # Heat Balance Controller - Boolean, float, and integer types
-  heat_balance_mode: "bool"
-  charging_mode_threshold: "float(0.1,2.0)"
-  maintenance_mode_threshold: "float(0.1,1.0)"
   trajectory_steps: "int(2,8)"
-  oscillation_penalty_weight: "float(0.0,1.0)"
-  final_destination_weight: "float(1.0,3.0)"
   # Advanced Learning Features - Boolean, integer, and float types
   enable_multi_lag_learning: "bool"
   pv_lag_steps: "int(1,8)"
@@ -211,6 +206,7 @@ schema:
   shadow_mode: "bool"
   # ML Heating Control Entity - String type
   ml_heating_control_entity: "str"
+
 
 
 
