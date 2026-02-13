@@ -171,7 +171,7 @@ class HAClient:
             the call fails.
         """
         svc_url = f"{self.url}/api/services/weather/get_forecasts"
-        body = {"entity_id": ["weather.openweathermap"], "type": "hourly"}
+        body = {"entity_id": ["weather.home"], "type": "hourly"}
 
         try:
             resp = requests.post(
@@ -188,7 +188,7 @@ class HAClient:
             return [0.0, 0.0, 0.0, 0.0]
 
         try:
-            forecast_list = data["weather.openweathermap"]["forecast"]
+            forecast_list = data["weather.home"]["forecast"]
         except (KeyError, TypeError):
             return [0.0, 0.0, 0.0, 0.0]
 
