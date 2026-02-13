@@ -185,7 +185,7 @@ schema:
   dev_api_key: "str"
   log_level: "list(DEBUG|INFO|WARNING|ERROR)"
   # Performance Tuning - Float and boolean types
-  confidence_threshold: "float(0.1,0.95)"
+  confidence_threshold: "float(0.1,10)"
   physics_validation_enabled: "bool"
   seasonal_learning_enabled: "bool"
   # Heat Balance Controller - Boolean, float, and integer types
@@ -211,5 +211,6 @@ schema:
   shadow_mode: "bool"
   # ML Heating Control Entity - String type
   ml_heating_control_entity: "str"
+
 
 
