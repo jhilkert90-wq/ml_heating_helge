@@ -51,3 +51,11 @@ cd /app
 
 # Execute the main application directly
 exec python3 -m src.main
+
+bashio::log.info "Starting Dashboard service..."
+python3 -m streamlit run /app/dashboard/app.py \
+    --server.port=3001 \
+    --server.address=0.0.0.0 \
+    --server.headless=true \
+    --server.enableCORS=false \
+    --server.enableXsrfProtection=false &
