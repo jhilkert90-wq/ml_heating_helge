@@ -1,6 +1,5 @@
 name: "ML Heating Control"
 version: "0.2.0"
-#image: "ghcr.io/helgeerbe/ml_heating"
 slug: "ml_heating"
 description: "Physics-based machine learning heating control system with online learning (Stable Channel)"
 url: "https://github.com/jhilkert90-wq/ml_heating_helge"
@@ -366,4 +365,5 @@ schema:
   # Delta Temperature Forecast Calibration - Boolean and float types
   enable_delta_forecast_calibration: "bool"
   delta_calibration_max_offset: "float(1.0,20.0)"
+
 
