@@ -39,9 +39,23 @@ def _is_addon_environment():
 if _is_addon_environment():
     HASS_URL: str = os.getenv("HASS_URL", "http://supervisor/core")
     HASS_TOKEN: str = os.getenv("SUPERVISOR_TOKEN", "").strip()
+    # --- File Paths ---
+    UNIFIED_STATE_FILE: str = os.getenv(
+        "UNIFIED_STATE_FILE", "/data/unified_thermal_state.json"
+    )
+    CALIBRATION_BASELINE_FILE: str = os.getenv(
+        "CALIBRATION_BASELINE_FILE", "/data/calibrated_baseline.json"
+    )
 else:
     HASS_URL = os.getenv("HASS_URL", "http://localhost:8123")
     HASS_TOKEN = os.getenv("HASS_TOKEN", "").strip()
+    # --- File Paths ---
+    UNIFIED_STATE_FILE: str = os.getenv(
+        "UNIFIED_STATE_FILE", "/opt/ml_heating/unified_thermal_state.json"
+    )
+    CALIBRATION_BASELINE_FILE: str = os.getenv(
+        "CALIBRATION_BASELINE_FILE", "/opt/ml_heating/calibrated_baseline.json"
+    )
 
 
 HASS_HEADERS: dict[str, str] = {
@@ -57,13 +71,7 @@ INFLUX_FEATURES_BUCKET: str = os.getenv(
     "INFLUX_FEATURES_BUCKET", "ml_heating_features"
 )
 
-# --- File Paths ---
-UNIFIED_STATE_FILE: str = os.getenv(
-    "UNIFIED_STATE_FILE", "/opt/ml_heating/unified_thermal_state.json"
-)
-CALIBRATION_BASELINE_FILE: str = os.getenv(
-    "CALIBRATION_BASELINE_FILE", "/opt/ml_heating/calibrated_baseline.json"
-)
+
 
 # --- Model & History Parameters ---
 # These parameters control time windows for feature creation and prediction.
